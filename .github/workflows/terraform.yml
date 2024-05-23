@@ -51,7 +51,7 @@ jobs:
       - name: Terraform Plan for Dev
         if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
         id: terraform-plan-dev
-        run: terraform plan -var-file="./envs/dev/terraform.tfvars" -out=dev.plan
+        run: cd infra && terraform plan -var-file="./envs/dev/terraform.tfvars" -out=dev.plan
 
       - name: Terraform Apply for Dev
         id: terraform-apply-dev
@@ -67,7 +67,7 @@ jobs:
 
       - name: Terraform Plan for Prod
         id: terraform-plan-prod
-        run: terraform plan -var-file="./envs/prod/terraform.tfvars" -out=prod.plan
+        run: cd infra && terraform plan -var-file="./envs/prod/terraform.tfvars" -out=prod.plan
 
       - name: Terraform Apply for Prod
         id: terraform-apply-prod
