@@ -10,10 +10,10 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-#    env:
-#      AWS_REGION: sa-east-1
-#      TERRAFORM_S3_STATEFILE_BUCKET: buildrun-sa-east-1-terraform-s3-statefile
-#      TERRAFORM_DYNAMODB_LOCK_TABLE: buildrun-terraform-state-lock
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      TERRAFORM_S3_STATEFILE_BUCKET: ${{ secrets.TERRAFORM_S3_STATEFILE_BUCKET }}
+      TERRAFORM_DYNAMODB_LOCK_TABLE: ${{ secrets.TERRAFORM_DYNAMODB_LOCK_TABLE }}
 
     defaults:
       run:
@@ -28,18 +28,20 @@ jobs:
         with:
           terraform_version: 1.8.3
 
-      - name: debug
-        run: |
-          pwd &&
-          ls &&
-          echo "${{ CONTEXT.$AWS_REGION }}" &&
-          echo $AWS_REGION &&
-          echo $TERRAFORM_S3_STATEFILE_BUCKET &&
-          echo $TERRAFORM_DYNAMODB_LOCK_TABLE
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         run: |
-          env && cd infra && terraform init
+          cd infra && terraform init \
+            -backend-config="bucket=${{ env.S3_BUCKET }}" \
+            -backend-config="key=path/to/terraform.tfstate" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ env.DYNAMODB_TABLE }}"
 
       - name: Terraform Validate
         run: terraform validate
