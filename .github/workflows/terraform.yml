@@ -30,6 +30,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Read destroy configuration
+        id: read-destroy-config
+        run: |
+          DESTROY_DEV="$(jq -r '.dev' destroy_config.json)"
+          DESTROY_PROD="$(jq -r '.prod' destroy_config.json)"
+          echo "::set-output name=destroy_dev::$DESTROY_DEV"
+          echo "::set-output name=destroy_prod::$DESTROY_PROD"
+
       - name: Terraform Init
         run: |
           cd infra && terraform init \
@@ -41,14 +49,15 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-#      - name: Terraform Create Dev Workspace
-#        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-#        id: select-dev-workspace
-#        run: |
-#          terraform workspace list | grep -q "dev" || terraform workspace new dev
+      - name: Terraform Destroy for Dev
+        if: steps.read-destroy-config.outputs.destroy_dev == 'true' && github.ref == 'refs/heads/develop' && github.event_name == 'push'
+        id: terraform-destroy-dev
+        run: cd infra &&
+          terraform workspace select dev || terraform workspace new dev &&
+          terraform destroy -var-file="./envs/dev/terraform.tfvars" -auto-approve
 
       - name: Terraform Plan for Dev
-        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+        if: steps.read-destroy-config.outputs.destroy_dev != 'true' && github.ref == 'refs/heads/develop' && github.event_name == 'push'
         id: terraform-plan-dev
         run: cd infra &&
           terraform workspace select dev || terraform workspace new dev &&
@@ -56,26 +65,27 @@ jobs:
 
       - name: Terraform Apply for Dev
         id: terraform-apply-dev
-        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+        if: steps.read-destroy-config.outputs.destroy_dev != 'true' && github.ref == 'refs/heads/develop' && github.event_name == 'push'
         run: cd infra &&
           terraform workspace select dev || terraform workspace new dev &&
           terraform apply "dev.plan"
 
-#      - name: Terraform Create Prod Workspace
-#        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-#        id: select-prod-workspace
-#        run: |
-#          terraform workspace list | grep -q "prod" || terraform workspace new prod
+      - name: Terraform Destroy for Prod
+        if: steps.read-destroy-config.outputs.destroy_prod == 'true' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: terraform-destroy-prod
+        run: cd infra &&
+          terraform workspace select prod || terraform workspace new prod &&
+          terraform destroy -var-file="./envs/prod/terraform.tfvars" -auto-approve
 
       - name: Terraform Plan for Prod
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: steps.read-destroy-config.outputs.destroy_prod != 'true' && github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: terraform-plan-prod
         run: cd infra &&
           terraform workspace select prod || terraform workspace new prod &&
           terraform plan -var-file="./envs/prod/terraform.tfvars" -out=prod.plan
 
       - name: Terraform Apply for Prod
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: steps.read-destroy-config.outputs.destroy_prod != 'true' && github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: terraform-apply-prod
         run: cd infra &&
           terraform workspace select prod || terraform workspace new prod &&
