@@ -32,7 +32,7 @@ jobs:
         run: |
           pwd &&
           ls &&
-          echo ${{ CONTEXT.$AWS_REGION }} &&
+          echo "${{ CONTEXT.$AWS_REGION }}" &&
           echo $AWS_REGION &&
           echo $TERRAFORM_S3_STATEFILE_BUCKET &&
           echo $TERRAFORM_DYNAMODB_LOCK_TABLE
