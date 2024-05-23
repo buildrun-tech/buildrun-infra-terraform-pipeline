@@ -30,7 +30,7 @@ jobs:
 
       - name: Terraform Init
         run: |
-          cd infra && terraform init
+          env && cd infra && terraform init
 
       - name: Terraform Validate
         run: terraform validate
