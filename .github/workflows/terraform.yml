@@ -33,8 +33,8 @@ jobs:
       - name: Read destroy configuration
         id: read-destroy-config
         run: |
-          DESTROY_DEV="$(jq -r '.dev' destroy_config.json)"
-          DESTROY_PROD="$(jq -r '.prod' destroy_config.json)"
+          DESTROY_DEV="$(jq -r '.dev' ./infra/destroy_config.json)"
+          DESTROY_PROD="$(jq -r '.prod' ./infra/destroy_config.json)"
           echo "::set-output name=destroy_dev::$DESTROY_DEV"
           echo "::set-output name=destroy_prod::$DESTROY_PROD"
 
