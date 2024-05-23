@@ -10,10 +10,10 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    env:
-      AWS_REGION: sa-east-1
-      TERRAFORM_S3_STATEFILE_BUCKET: buildrun-sa-east-1-terraform-s3-statefile
-      TERRAFORM_DYNAMODB_LOCK_TABLE: buildrun-terraform-state-lock
+#    env:
+#      AWS_REGION: sa-east-1
+#      TERRAFORM_S3_STATEFILE_BUCKET: buildrun-sa-east-1-terraform-s3-statefile
+#      TERRAFORM_DYNAMODB_LOCK_TABLE: buildrun-terraform-state-lock
 
     defaults:
       run:
