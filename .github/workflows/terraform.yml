@@ -66,10 +66,11 @@ jobs:
           terraform workspace select prod
 
       - name: Terraform Plan for Prod
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: terraform-plan-prod
         run: cd infra && terraform plan -var-file="./envs/prod/terraform.tfvars" -out=prod.plan
 
       - name: Terraform Apply for Prod
-        id: terraform-apply-prod
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: terraform-apply-prod
         run: cd infra && terraform apply "prod.plan"
