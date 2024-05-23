@@ -39,7 +39,7 @@ jobs:
         run: |
           cd infra && terraform init \
             -backend-config="bucket=${{ env.S3_BUCKET }}" \
-            -backend-config="key=path/to/terraform.tfstate" \
+            -backend-config="key=${{ github.event.repository.name }}" \
             -backend-config="region=${{ env.AWS_REGION }}" \
             -backend-config="dynamodb_table=${{ env.DYNAMODB_TABLE }}"
 
