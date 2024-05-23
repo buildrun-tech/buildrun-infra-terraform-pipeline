@@ -26,10 +26,10 @@ jobs:
       - name: Terraform Init
         run: |
           cd infra && terraform init \
-            -backend-config="bucket=${{ env.TERRAFORM_S3_STATEFILE_BUCKET }}" \
+            -backend-config="bucket=$TERRAFORM_S3_STATEFILE_BUCKET" \
             -backend-config="${{ github.event.repository.name }}" \
-            -backend-config="region=${{ env.AWS_REGION }}" \
-            -backend-config="dynamodb_table=${{ env.TERRAFORM_DYNAMODB_LOCK_TABLE }}"
+            -backend-config="region=$AWS_REGION" \
+            -backend-config="dynamodb_table=$TERRAFORM_DYNAMODB_LOCK_TABLE"
 
       - name: Terraform Validate
         run: terraform validate
