@@ -56,7 +56,7 @@ jobs:
       - name: Terraform Apply for Dev
         id: terraform-apply-dev
         if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-        run: terraform apply dev.plan
+        run: terraform apply "dev.plan"
 
       - name: Terraform Create/Select Prod Workspace
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -72,4 +72,4 @@ jobs:
       - name: Terraform Apply for Prod
         id: terraform-apply-prod
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply prod.plan
+        run: terraform apply "prod.plan"
