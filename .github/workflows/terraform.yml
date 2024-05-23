@@ -41,36 +41,42 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Create/Select Dev Workspace
+      - name: Terraform Create Dev Workspace
         if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
         id: select-dev-workspace
         run: |
           terraform workspace list | grep -q "dev" || terraform workspace new dev
-          terraform workspace select dev
 
       - name: Terraform Plan for Dev
         if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
         id: terraform-plan-dev
-        run: cd infra && terraform plan -var-file="./envs/dev/terraform.tfvars" -out=dev.plan
+        run: cd infra &&
+          terraform workspace select dev &&
+          terraform plan -var-file="./envs/dev/terraform.tfvars" -out=dev.plan
 
       - name: Terraform Apply for Dev
         id: terraform-apply-dev
         if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-        run: cd infra && terraform apply "dev.plan"
+        run: cd infra &&
+          terraform workspace select dev &&
+          terraform apply "dev.plan"
 
-      - name: Terraform Create/Select Prod Workspace
+      - name: Terraform Create Prod Workspace
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: select-prod-workspace
         run: |
           terraform workspace list | grep -q "prod" || terraform workspace new prod
-          terraform workspace select prod
 
       - name: Terraform Plan for Prod
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: terraform-plan-prod
-        run: cd infra && terraform plan -var-file="./envs/prod/terraform.tfvars" -out=prod.plan
+        run: cd infra && 
+          terraform workspace select prod && 
+          terraform plan -var-file="./envs/prod/terraform.tfvars" -out=prod.plan
 
       - name: Terraform Apply for Prod
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: terraform-apply-prod
-        run: cd infra && terraform apply "prod.plan"
+        run: cd infra &&
+          terraform workspace select prod &&
+          terraform apply "prod.plan"
