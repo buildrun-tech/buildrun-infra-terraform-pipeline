@@ -28,15 +28,15 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Terraform Init
         run: |
           cd infra && terraform init \
-            -backend-config="bucket=${{ secrets.TERRAFORM_S3_STATEFILE_BUCKET }}" \
+            -backend-config="bucket=${{ vars.TERRAFORM_S3_STATEFILE_BUCKET }}" \
             -backend-config="key=${{ github.event.repository.name }}" \
             -backend-config="region=${{ env.AWS_REGION }}" \
-            -backend-config="dynamodb_table=${{ secrets.TERRAFORM_DYNAMODB_LOCK_TABLE }}"
+            -backend-config="dynamodb_table=${{ vars.TERRAFORM_DYNAMODB_LOCK_TABLE }}"
 
       - name: Terraform Validate
         run: terraform validate
