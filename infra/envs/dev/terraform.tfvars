@@ -1,1 +1,1 @@
-bucket_name="DEV-buildrun-pipeline-123-bucket"
+bucket_name="dev-buildrun-pipeline-123-bucket"
