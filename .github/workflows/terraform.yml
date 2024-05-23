@@ -10,11 +10,6 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    env:
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      TERRAFORM_S3_STATEFILE_BUCKET: ${{ secrets.TERRAFORM_S3_STATEFILE_BUCKET }}
-      TERRAFORM_DYNAMODB_LOCK_TABLE: ${{ secrets.TERRAFORM_DYNAMODB_LOCK_TABLE }}
-
     defaults:
       run:
         shell: bash
@@ -38,10 +33,10 @@ jobs:
       - name: Terraform Init
         run: |
           cd infra && terraform init \
-            -backend-config="bucket=${{ env.S3_BUCKET }}" \
+            -backend-config="bucket=${{ secrets.TERRAFORM_S3_STATEFILE_BUCKET }}" \
             -backend-config="key=${{ github.event.repository.name }}" \
             -backend-config="region=${{ env.AWS_REGION }}" \
-            -backend-config="dynamodb_table=${{ env.DYNAMODB_TABLE }}"
+            -backend-config="dynamodb_table=${{ secrets.TERRAFORM_DYNAMODB_LOCK_TABLE }}"
 
       - name: Terraform Validate
         run: terraform validate
