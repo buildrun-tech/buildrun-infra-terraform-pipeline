@@ -67,7 +67,7 @@ jobs:
 
       - name: Terraform Plan for Prod
         id: terraform-plan-prod
-        run: pwd && ls &&  && terraform plan -var-file="./envs/prod/terraform.tfvars" -out=prod.plan
+        run: terraform plan -var-file="./envs/prod/terraform.tfvars" -out=prod.plan
 
       - name: Terraform Apply for Prod
         id: terraform-apply-prod
