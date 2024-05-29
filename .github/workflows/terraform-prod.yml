@@ -1,15 +1,13 @@
-name: Terraform Deployment
+name: "[PROD] - Terraform Deployment"
 
 on:
   push:
     branches:
-      - develop
       - main
 
-# Permission can be added at job level or workflow level
 permissions:
-  id-token: write   # This is required for requesting the JWT
-  contents: read    # This is required for actions/checkout
+  id-token: write
+  contents: read
 
 jobs:
   terraform:
@@ -33,8 +31,6 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::179916804929:role/BuildRun-GithubActions-Role #change to reflect your IAM role’s ARN
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Read destroy configuration
@@ -55,27 +51,6 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
-
-      - name: Terraform Destroy for Dev
-        if: steps.read-destroy-config.outputs.destroy_dev == 'true' && github.ref == 'refs/heads/develop' && github.event_name == 'push'
-        id: terraform-destroy-dev
-        run: cd infra &&
-          terraform workspace select dev || terraform workspace new dev &&
-          terraform destroy -var-file="./envs/dev/terraform.tfvars" -auto-approve
-
-      - name: Terraform Plan for Dev
-        if: steps.read-destroy-config.outputs.destroy_dev != 'true' && github.ref == 'refs/heads/develop' && github.event_name == 'push'
-        id: terraform-plan-dev
-        run: cd infra &&
-          terraform workspace select dev || terraform workspace new dev &&
-          terraform plan -var-file="./envs/dev/terraform.tfvars" -out=dev.plan
-
-      - name: Terraform Apply for Dev
-        id: terraform-apply-dev
-        if: steps.read-destroy-config.outputs.destroy_dev != 'true' && github.ref == 'refs/heads/develop' && github.event_name == 'push'
-        run: cd infra &&
-          terraform workspace select dev || terraform workspace new dev &&
-          terraform apply "dev.plan"
 
       - name: Terraform Destroy for Prod
         if: steps.read-destroy-config.outputs.destroy_prod == 'true' && github.ref == 'refs/heads/main' && github.event_name == 'push'
