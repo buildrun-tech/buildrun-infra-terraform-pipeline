@@ -36,23 +36,21 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::179916804929:role/BuildRun-GithubActions-Role #change to reflect your IAM role’s ARN
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Read destroy configuration
         id: read-destroy-config
         run: |
-          DESTROY_DEV="$(jq -r '.dev' ./infra/destroy_config.json)"
           DESTROY_PROD="$(jq -r '.prod' ./infra/destroy_config.json)"
-          echo "destroy_dev=$(echo $DESTROY_DEV)" >> $GITHUB_OUTPUT
           echo "destroy_prod=$(echo $DESTROY_PROD)" >> $GITHUB_OUTPUT
 
       - name: Terraform Init
         run: |
           cd infra && terraform init \
-            -backend-config="bucket=${{ vars.TERRAFORM_S3_STATEFILE_BUCKET }}" \
+            -backend-config="bucket=${{ env.TERRAFORM_S3_STATEFILE_BUCKET }}" \
             -backend-config="key=${{ github.event.repository.name }}" \
             -backend-config="region=${{ env.AWS_REGION }}" \
-            -backend-config="dynamodb_table=${{ vars.TERRAFORM_DYNAMODB_LOCK_TABLE }}"
+            -backend-config="dynamodb_table=${{ env.TERRAFORM_DYNAMODB_LOCK_TABLE }}"
 
       - name: Terraform Validate
         run: terraform validate
