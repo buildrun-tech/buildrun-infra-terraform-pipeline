@@ -21,11 +21,11 @@ Para um maior entendimento do código deste repositório, [assista nosso vídeo 
 ## Fluxo da Pipeline
 
 <p align="center" width="100%">
-    <img width="80%" src="https://github.com/buildrun-tech/buildrun-infra-terraform-pipeline/blob/main/images/fluxo.png"> 
+    <img width="100%" src="https://github.com/buildrun-tech/buildrun-infra-terraform-pipeline/blob/main/images/fluxo.png"> 
 </p>
 
 <p align="center" width="100%">
-    <img width="80%" src="https://github.com/buildrun-tech/buildrun-infra-terraform-pipeline/blob/main/images/fluxo-detail.png"> 
+    <img width="100%" src="https://github.com/buildrun-tech/buildrun-infra-terraform-pipeline/blob/main/images/fluxo-detail.png"> 
 </p>
 
 ## Como começar?
