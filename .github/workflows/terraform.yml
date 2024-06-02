@@ -1,28 +1,27 @@
-name: Terraform Workflow
+name: "Terraform Workflow"
 
 on:
   workflow_call:
     inputs:
-      aws-assume-role-arn:
-        required: true
-        type: string
       environment:
-        required: true
         type: string
+        required: true
+      aws-assume-role-arn:
+        type: string
+        required: true
       aws-region:
-        required: true
         type: string
+        required: true
       aws-statefile-s3-bucket:
-        required: true
         type: string
+        required: true
       aws-lock-dynamodb-table:
-        required: true
         type: string
+        required: true
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
-
     defaults:
       run:
         shell: bash
@@ -75,8 +74,8 @@ jobs:
           terraform plan -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -out="${{ inputs.environment }}.plan"
 
       - name: Terraform Apply
-        id: terraform-apply
         if: steps.read-destroy-config.outputs.destroy != 'true'
+        id: terraform-apply
         run: cd infra &&
           terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
           terraform apply "${{ inputs.environment }}.plan"

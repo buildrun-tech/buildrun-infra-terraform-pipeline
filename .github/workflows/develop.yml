@@ -1,4 +1,4 @@
-name: DEV DEPLOY
+name: "DEV DEPLOY"
 
 on:
   push:
@@ -11,10 +11,10 @@ permissions:
 
 jobs:
   terraform:
-    uses: "./.github/workflows/terraform.yml"
+    uses: ./.github/workflows/terraform.yml
     with:
-      aws-assume-role-arn: "arn:aws:iam::179916804929:role/github-actions-brunograna-pipeline-test"
-      environment: "dev"
+      environment: dev
+      aws-assume-role-arn: "arn:aws:iam::{{ sua conta aws }}:role/{{ nome da role }}"
       aws-region: "sa-east-1"
-      aws-statefile-s3-bucket: "brunograna-sa-east-1-terraform-statefile"
-      aws-lock-dynamodb-table: "buildrun-terraform-state-lock"
+      aws-statefile-s3-bucket: "{{ nome do bucket s3 }}"
+      aws-lock-dynamodb-table: "{{ nome da tabela do dynamodb }}"
