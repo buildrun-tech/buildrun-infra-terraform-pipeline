@@ -1,0 +1,20 @@
+name: "PROD DEPLOY"
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      environment: prod
+      aws-assume-role-arn: "arn:aws:iam::{{ sua conta aws }}:role/{{ nome da role }}"
+      aws-region: "sa-east-1"
+      aws-statefile-s3-bucket: "{{ nome do bucket s3 }}"
+      aws-lock-dynamodb-table: "{{ nome da tabela do dynamodb }}"
