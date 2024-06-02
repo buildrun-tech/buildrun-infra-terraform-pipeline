@@ -18,6 +18,16 @@
 
 Para um maior entendimento do código deste repositório, [assista nosso vídeo no Youtube, clique aqui.](https://www.youtube.com/watch?v=1TNAUW7_bC0)
 
+## Fluxo da Pipeline
+
+<p align="center" width="100%">
+    <img width="80%" src="https://github.com/buildrun-tech/buildrun-infra-terraform-pipeline/blob/main/images/fluxo.png"> 
+</p>
+
+<p align="center" width="100%">
+    <img width="80%" src="https://github.com/buildrun-tech/buildrun-infra-terraform-pipeline/blob/main/images/fluxo-detail.png"> 
+</p>
+
 ## Como começar?
 - Crie o Identity Provider do Github em sua conta AWS
 - Crie uma IAM Role em sua conta AWS (Permissão mínimia de S3 e DynamoDB)
