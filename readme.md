@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-    <img width="30%" src="https://github.com/buildrun-tech/buildrun-infra-terraform-pipeline/blob/main/images/thumbnail.png"> 
+    <img width="50%" src="https://github.com/buildrun-tech/buildrun-infra-terraform-pipeline/blob/main/images/thumbnail.png"> 
 </p>
 
 
